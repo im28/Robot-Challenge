@@ -8,8 +8,8 @@ Deno.test("Robot Placement", async (t) => {
   // Valid placement tests
   await t.step("should place robot at valid position", () => {
     const robot = new ToyRobot(reporter, board);
-    robot.place(0, 0, "NORTH");
-    assertEquals(robot.report(), { x: 0, y: 0, facing: "NORTH" });
+    robot.place(0, 0, "WEST");
+    assertEquals(robot.report(), { x: 0, y: 0, facing: "WEST" });
   });
 
   await t.step("should place robot at maximum valid position", () => {

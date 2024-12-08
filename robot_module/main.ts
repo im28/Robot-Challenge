@@ -48,7 +48,11 @@ export class ToyRobot implements Robot {
   constructor(private reporter: RobotReporter, private board: Board) {}
 
   place(x: number, y: number, facing: Direction): void {
-    // throw new Error("Not implemented");
+    if (this.board.canPlace({ x, y })) {
+      this.orientedPosition = { x, y, facing };
+    } else {
+      throw new Error("Cannot place robot outside of table");
+    }
   }
   move(): void {
     throw new Error("Not implemented");
@@ -60,7 +64,6 @@ export class ToyRobot implements Robot {
     throw new Error("Not implemented");
   }
   report(): OrientedPosition {
-    // throw new Error("Not implemented");
     return this.orientedPosition;
   }
   processCommand(command: string): void {
