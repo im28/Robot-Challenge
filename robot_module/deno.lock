@@ -4,6 +4,7 @@
     "jsr:@std/assert@*": "1.0.9",
     "jsr:@std/assert@^1.0.9": "1.0.9",
     "jsr:@std/internal@^1.0.5": "1.0.5",
+    "npm:ts-sinon@*": "2.0.2",
     "npm:ts-sinon@^2.0.2": "2.0.2"
   },
   "jsr": {
