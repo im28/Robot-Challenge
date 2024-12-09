@@ -54,7 +54,6 @@ interface Robot {
   left(): void;
   right(): void;
   report(): OrientedPosition;
-  processCommand(command: string): void;
 }
 
 export class RobotError extends Error {
@@ -64,13 +63,10 @@ export class RobotError extends Error {
   }
 }
 
-export class ToyRobot implements Robot {
-  private orientedPosition: OrientedPosition = {
-    x: NaN,
-    y: NaN,
-    facing: "NORTH",
-  };
-  constructor(private board: Board) {}
+export class PlacedRobot implements Robot {
+  constructor(private board: Board, private orientedPosition: OrientedPosition) {
+    this.place(orientedPosition.x, orientedPosition.y, orientedPosition.facing);
+  }
 
   place(x: number, y: number, facing: Orientation): void {
     if (!Number.isInteger(x) || !Number.isInteger(y)) {
@@ -123,8 +119,5 @@ export class ToyRobot implements Robot {
   }
   report(): OrientedPosition {
     return this.orientedPosition;
-  }
-  processCommand(command: string): void {
-    throw new Error("Not implemented");
   }
 }
