@@ -1,0 +1,4 @@
+# Deno coverage files
+coverage/
+*.lcov
+
