@@ -9,7 +9,7 @@ interface CoordinateSystemConfig {
   originY: number;
   yAxisDirection: "UP" | "DOWN";
 }
-interface Board {
+export interface Board {
   getDimensions(): Dimensions;
   canPlace(position: Position): boolean;
 }
@@ -20,7 +20,8 @@ export class BasicBoard implements Board {
   }
   canPlace(position: Position): boolean {
     // check if position is within bounds
-    return position.x >= 0 && position.x < 5 && position.y >= 0 && position.y < 5;
+    return position.x >= 0 && position.x < 5 && position.y >= 0 &&
+      position.y < 5;
   }
 }
 
@@ -43,16 +44,32 @@ interface Robot {
   processCommand(command: string): void;
 }
 
+export class RobotError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "RobotError";
+  }
+}
+
 export class ToyRobot implements Robot {
-  private orientedPosition: OrientedPosition = { x: NaN, y: NaN, facing: "NORTH" };
-  constructor(private reporter: RobotReporter, private board: Board) {}
+  private orientedPosition: OrientedPosition = {
+    x: NaN,
+    y: NaN,
+    facing: "NORTH",
+  };
+  constructor(private board: Board) {}
 
   place(x: number, y: number, facing: Direction): void {
-    if (this.board.canPlace({ x, y })) {
-      this.orientedPosition = { x, y, facing };
-    } else {
-      throw new Error("Cannot place robot outside of table");
+    if (!Number.isInteger(x) || !Number.isInteger(y)) {
+      throw new RobotError("Coordinates must be integers");
     }
+    if (!this.board.canPlace({ x, y })) {
+      throw new RobotError(
+        `Invalid position: (${x}, ${y}) is outside the table boundaries`,
+      );
+    }
+
+    this.orientedPosition = { x, y, facing };
   }
   move(): void {
     throw new Error("Not implemented");
