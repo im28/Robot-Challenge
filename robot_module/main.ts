@@ -72,7 +72,29 @@ export class ToyRobot implements Robot {
     this.orientedPosition = { x, y, facing };
   }
   move(): void {
-    throw new Error("Not implemented");
+    let { x, y, facing } = this.orientedPosition;
+    switch (facing) {
+      case "NORTH":
+        y += 1;
+        break;
+      case "SOUTH":
+        y -= 1;
+        break;
+      case "EAST":
+        x += 1;
+        break;
+      case "WEST":
+        x -= 1;
+        break;
+    }
+
+    if (!this.board.canPlace({ x, y })) {
+      throw new RobotError(
+        `Invalid position: (${x}, ${y}) is outside the table boundaries`,
+      );
+    }
+
+    this.orientedPosition = { x, y, facing };
   }
   left(): void {
     throw new Error("Not implemented");

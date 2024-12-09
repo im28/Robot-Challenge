@@ -1,8 +1,7 @@
 import { assert, assertEquals, assertThrows } from "jsr:@std/assert";
-import { Board, RobotError, ToyRobot } from "./main.ts";
+import { Board, RobotError, ToyRobot, Position } from "./main.ts";
 import { stubInterface } from "npm:ts-sinon";
 
-// Test Suite
 Deno.test("Robot Placement", async (t) => {
   const board = stubInterface<Board>();
 
@@ -42,5 +41,37 @@ Deno.test("Robot Placement", async (t) => {
       RobotError,
       "Invalid position: (0, 5) is outside the table boundaries",
     );
+  });
+});
+
+Deno.test("Robot Movement", async (t) => {
+  const board = stubInterface<Board>();
+
+  // Valid movement tests
+  await t.step("should move robot forward", () => {
+    board.canPlace.returns(true);
+    const robot = new ToyRobot(board);
+    robot.place(0, 0, "NORTH");
+    robot.move();
+    assertEquals(robot.report(), { x: 0, y: 1, facing: "NORTH" });
+  });
+
+  // Invalid movement tests
+  await t.step("should not move robot off table", () => {
+    const robot = new ToyRobot(board);
+    
+    // Setup canPlace to return true for (0,0) and false for (0,1)
+    board.canPlace.withArgs({ x: 0, y: 0 }).returns(true);
+    board.canPlace.withArgs({ x: 0, y: 1 }).returns(false);
+    
+    robot.place(0, 0, "NORTH");
+
+    assertThrows(
+      () => robot.move(),
+      RobotError,
+      "Invalid position: (0, 1) is outside the table boundaries",
+    );
+    
+    assertEquals(robot.report(), { x: 0, y: 0, facing: "NORTH" });
   });
 });
