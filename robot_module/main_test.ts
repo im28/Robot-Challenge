@@ -1,6 +1,14 @@
-import { assert, assertEquals, assertThrows } from "jsr:@std/assert";
-import { Board, PlacedRobot, Position, RobotError } from "./main.ts";
+import { assertEquals, assertThrows } from "jsr:@std/assert";
+import { Board, PlacedRobot, RobotError } from "./main.ts";
 import { stubInterface } from "npm:ts-sinon";
+
+Deno.test("Robot report", () => {
+  const board = stubInterface<Board>();
+  board.canPlace.returns(true);
+
+  const robot = new PlacedRobot(board, { x: 0, y: 0, facing: "NORTH" });
+  assertEquals(robot.report(), { x: 0, y: 0, facing: "NORTH" });
+});
 
 Deno.test("Robot Constructor", async (t) => {
   const board = stubInterface<Board>();
@@ -81,6 +89,30 @@ Deno.test("Robot Movement", async (t) => {
     robot.place(0, 0, "NORTH");
     robot.move();
     assertEquals(robot.report(), { x: 0, y: 1, facing: "NORTH" });
+  });
+
+  await t.step("should move robot backward", () => {
+    board.canPlace.returns(true);
+    const robot = new PlacedRobot(board, initialPosition);
+    robot.place(0, 1, "SOUTH");
+    robot.move();
+    assertEquals(robot.report(), { x: 0, y: 0, facing: "SOUTH" });
+  });
+
+  await t.step("should move robot left", () => {
+    board.canPlace.returns(true);
+    const robot = new PlacedRobot(board, initialPosition);
+    robot.place(1, 0, "WEST");
+    robot.move();
+    assertEquals(robot.report(), { x: 0, y: 0, facing: "WEST" });
+  });
+
+  await t.step("should move robot right", () => {
+    board.canPlace.returns(true);
+    const robot = new PlacedRobot(board, initialPosition);
+    robot.place(0, 0, "EAST");
+    robot.move();
+    assertEquals(robot.report(), { x: 1, y: 0, facing: "EAST" });
   });
 
   // Invalid movement tests
