@@ -75,3 +75,40 @@ Deno.test("Robot Movement", async (t) => {
     assertEquals(robot.report(), { x: 0, y: 0, facing: "NORTH" });
   });
 });
+
+
+Deno.test("Robot turn", async (t) => {
+  const board = stubInterface<Board>();
+  board.canPlace.returns(true);
+
+  // Valid Left turn tests
+  await t.step("should turn robot left", () => {
+    const robot = new ToyRobot(board);
+    robot.place(0, 0, "NORTH");
+    robot.left();
+    assertEquals(robot.report(), { x: 0, y: 0, facing: "WEST" });
+    robot.left();
+    assertEquals(robot.report(), { x: 0, y: 0, facing: "SOUTH" });
+    robot.left();
+    assertEquals(robot.report(), { x: 0, y: 0, facing: "EAST" });
+    robot.left();
+    assertEquals(robot.report(), { x: 0, y: 0, facing: "NORTH" });
+
+  });
+
+  // Valid Right turn tests
+  await t.step("should turn robot right", () => {
+    const robot = new ToyRobot(board);
+    robot.place(0, 0, "NORTH");
+    robot.right();
+    assertEquals(robot.report(), { x: 0, y: 0, facing: "EAST" });
+    robot.right();
+    assertEquals(robot.report(), { x: 0, y: 0, facing: "SOUTH" });
+    robot.right();
+    assertEquals(robot.report(), { x: 0, y: 0, facing: "WEST" });
+    robot.right();
+    assertEquals(robot.report(), { x: 0, y: 0, facing: "NORTH" });
+  });
+  
+});
+
