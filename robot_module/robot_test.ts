@@ -2,13 +2,16 @@ import { assertEquals, assertThrows } from "jsr:@std/assert";
 import { Board, PlacedRobot, RobotError } from "./main.ts";
 import { stubInterface } from "npm:ts-sinon";
 
-Deno.test("Robot report", () => {
-  const board = stubInterface<Board>();
-  board.canPlace.returns(true);
+Deno.test(
+  "PlacedRobot.report should return the current position and orientation",
+  () => {
+    const board = stubInterface<Board>();
+    board.canPlace.returns(true);
 
-  const robot = new PlacedRobot(board, { x: 0, y: 0, facing: "NORTH" });
-  assertEquals(robot.report(), { x: 0, y: 0, facing: "NORTH" });
-});
+    const robot = new PlacedRobot(board, { x: 0, y: 0, facing: "NORTH" });
+    assertEquals(robot.report(), { x: 0, y: 0, facing: "NORTH" });
+  },
+);
 
 Deno.test("Robot Constructor", async (t) => {
   const board = stubInterface<Board>();
@@ -78,42 +81,54 @@ Deno.test("Robot Placement", async (t) => {
   });
 });
 
-Deno.test("Robot Movement", async (t) => {
+Deno.test("PlacedRobot Movement", async (t) => {
   const board = stubInterface<Board>();
   const initialPosition = { x: 0, y: 0, facing: "NORTH" as const };
 
   // Valid movement tests
-  await t.step("should move robot forward", () => {
-    board.canPlace.returns(true);
-    const robot = new PlacedRobot(board, initialPosition);
-    robot.place(0, 0, "NORTH");
-    robot.move();
-    assertEquals(robot.report(), { x: 0, y: 1, facing: "NORTH" });
-  });
+  await t.step(
+    "PlacedRobot.move should correctly update position when facing NORTH",
+    () => {
+      board.canPlace.returns(true);
+      const robot = new PlacedRobot(board, initialPosition);
+      robot.place(0, 0, "NORTH");
+      robot.move();
+      assertEquals(robot.report(), { x: 0, y: 1, facing: "NORTH" });
+    },
+  );
 
-  await t.step("should move robot backward", () => {
-    board.canPlace.returns(true);
-    const robot = new PlacedRobot(board, initialPosition);
-    robot.place(0, 1, "SOUTH");
-    robot.move();
-    assertEquals(robot.report(), { x: 0, y: 0, facing: "SOUTH" });
-  });
+  await t.step(
+    "PlacedRobot.move should correctly update position when facing SOUTH",
+    () => {
+      board.canPlace.returns(true);
+      const robot = new PlacedRobot(board, initialPosition);
+      robot.place(0, 1, "SOUTH");
+      robot.move();
+      assertEquals(robot.report(), { x: 0, y: 0, facing: "SOUTH" });
+    },
+  );
 
-  await t.step("should move robot left", () => {
-    board.canPlace.returns(true);
-    const robot = new PlacedRobot(board, initialPosition);
-    robot.place(1, 0, "WEST");
-    robot.move();
-    assertEquals(robot.report(), { x: 0, y: 0, facing: "WEST" });
-  });
+  await t.step(
+    "PlacedRobot.move should correctly update position when facing WEST",
+    () => {
+      board.canPlace.returns(true);
+      const robot = new PlacedRobot(board, initialPosition);
+      robot.place(1, 0, "WEST");
+      robot.move();
+      assertEquals(robot.report(), { x: 0, y: 0, facing: "WEST" });
+    },
+  );
 
-  await t.step("should move robot right", () => {
-    board.canPlace.returns(true);
-    const robot = new PlacedRobot(board, initialPosition);
-    robot.place(0, 0, "EAST");
-    robot.move();
-    assertEquals(robot.report(), { x: 1, y: 0, facing: "EAST" });
-  });
+  await t.step(
+    "PlacedRobot.move should correctly update position when facing EAST",
+    () => {
+      board.canPlace.returns(true);
+      const robot = new PlacedRobot(board, initialPosition);
+      robot.place(0, 0, "EAST");
+      robot.move();
+      assertEquals(robot.report(), { x: 1, y: 0, facing: "EAST" });
+    },
+  );
 
   // Invalid movement tests
   await t.step("should not move robot off table", () => {
@@ -135,36 +150,40 @@ Deno.test("Robot Movement", async (t) => {
   });
 });
 
-Deno.test("Robot turn", async (t) => {
+Deno.test("PlacedRobot turning", async (t) => {
   const board = stubInterface<Board>();
   const initialPosition = { x: 0, y: 0, facing: "NORTH" as const };
   board.canPlace.returns(true);
 
-  // Valid Left turn tests
-  await t.step("should turn robot left", () => {
-    const robot = new PlacedRobot(board, initialPosition);
-    robot.place(0, 0, "NORTH");
-    robot.left();
-    assertEquals(robot.report(), { x: 0, y: 0, facing: "WEST" });
-    robot.left();
-    assertEquals(robot.report(), { x: 0, y: 0, facing: "SOUTH" });
-    robot.left();
-    assertEquals(robot.report(), { x: 0, y: 0, facing: "EAST" });
-    robot.left();
-    assertEquals(robot.report(), { x: 0, y: 0, facing: "NORTH" });
-  });
+  const leftTurns = [
+    { start: "NORTH", end: "WEST" },
+    { start: "WEST", end: "SOUTH" },
+    { start: "SOUTH", end: "EAST" },
+    { start: "EAST", end: "NORTH" },
+  ] as const;
 
-  // Valid Right turn tests
-  await t.step("should turn robot right", () => {
-    const robot = new PlacedRobot(board, initialPosition);
-    robot.place(0, 0, "NORTH");
-    robot.right();
-    assertEquals(robot.report(), { x: 0, y: 0, facing: "EAST" });
-    robot.right();
-    assertEquals(robot.report(), { x: 0, y: 0, facing: "SOUTH" });
-    robot.right();
-    assertEquals(robot.report(), { x: 0, y: 0, facing: "WEST" });
-    robot.right();
-    assertEquals(robot.report(), { x: 0, y: 0, facing: "NORTH" });
-  });
+  for (const { start, end } of leftTurns) {
+    await t.step(`should turn robot left from ${start} to ${end}`, () => {
+      const robot = new PlacedRobot(board, initialPosition);
+      robot.place(0, 0, start);
+      robot.left();
+      assertEquals(robot.report(), { x: 0, y: 0, facing: end });
+    });
+  }
+
+  const rightTurns = [
+    { start: "NORTH", end: "EAST" },
+    { start: "EAST", end: "SOUTH" },
+    { start: "SOUTH", end: "WEST" },
+    { start: "WEST", end: "NORTH" },
+  ] as const;
+
+  for (const { start, end } of rightTurns) {
+    await t.step(`should turn robot right from ${start} to ${end}`, () => {
+      const robot = new PlacedRobot(board, initialPosition);
+      robot.place(0, 0, start);
+      robot.right();
+      assertEquals(robot.report(), { x: 0, y: 0, facing: end });
+    });
+  }
 });
