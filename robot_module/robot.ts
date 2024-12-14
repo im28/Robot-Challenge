@@ -1,4 +1,4 @@
-import { Board, Position } from "./board.ts";
+import type { Board, Position } from "./board.ts";
 
 export type Orientation = "NORTH" | "SOUTH" | "EAST" | "WEST";
 export type OrientedPosition = Position & { facing: Orientation };

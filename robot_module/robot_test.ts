@@ -1,5 +1,5 @@
 import { assertEquals, assertThrows } from "jsr:@std/assert";
-import { Board, PlacedRobot, RobotError } from "./main.ts";
+import { Board, PlacedRobot, RobotError } from "./index.ts";
 import { stubInterface } from "npm:ts-sinon";
 
 Deno.test(

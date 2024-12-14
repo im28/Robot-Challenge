@@ -1,5 +1,5 @@
 import { assertEquals, assertThrows } from "jsr:@std/assert";
-import { BasicBoard, PlacedRobot, RobotError } from "./main.ts";
+import { BasicBoard, PlacedRobot, RobotError } from "./index.ts";
 
 Deno.test("Robot Movement with BasicBoard", async (t) => {
   const board = new BasicBoard();

@@ -1,6 +1,6 @@
 import { assertEquals } from "jsr:@std/assert";
 import { stubInterface } from "npm:ts-sinon";
-import { RobotCliSystem } from "./main.ts";
+import type { RobotCliSystem } from "./index.ts";
 
 const robot = stubInterface<RobotCliSystem>();
 

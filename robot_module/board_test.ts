@@ -1,5 +1,5 @@
 import { assertEquals } from "jsr:@std/assert";
-import { BasicBoard, Position } from "./main.ts";
+import { BasicBoard, type Position } from "./index.ts";
 
 Deno.test("BasicBoard", async (t) => {
   const board = new BasicBoard();
