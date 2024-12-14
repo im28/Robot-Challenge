@@ -4,7 +4,7 @@ export type Orientation = "NORTH" | "SOUTH" | "EAST" | "WEST";
 export type OrientedPosition = Position & { facing: Orientation };
 
 export interface Robot {
-  place(x: number, y: number, facing: Orientation): void;
+  place({ x, y, facing }: OrientedPosition): void;
   move(): void;
   left(): void;
   right(): void;
@@ -34,10 +34,10 @@ const rotateRightMap: Record<Orientation, Orientation> = {
 
 export class PlacedRobot implements Robot {
   constructor(private board: Board, private orientedPosition: OrientedPosition) {
-    this.place(orientedPosition.x, orientedPosition.y, orientedPosition.facing);
+    this.place(orientedPosition);
   }
 
-  place(x: number, y: number, facing: Orientation): void {
+  place({ x, y, facing }: OrientedPosition): void {
     if (!Number.isInteger(x) || !Number.isInteger(y)) {
       throw new RobotError("Coordinates must be integers");
     }

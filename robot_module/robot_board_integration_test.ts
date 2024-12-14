@@ -19,7 +19,7 @@ Deno.test("Robot Movement with BasicBoard", async (t) => {
     "PlacedRobot.move should correctly update position when facing SOUTH",
     () => {
       const robot = new PlacedRobot(board, initialPosition);
-      robot.place(0, 1, "SOUTH");
+      robot.place({ x:  0, y: 1, facing: "SOUTH" });
       robot.move();
       assertEquals(robot.report(), { x: 0, y: 0, facing: "SOUTH" });
     },
@@ -29,7 +29,7 @@ Deno.test("Robot Movement with BasicBoard", async (t) => {
     "PlacedRobot.move should correctly update position when facing WEST",
     () => {
       const robot = new PlacedRobot(board, initialPosition);
-      robot.place(1, 0, "WEST");
+      robot.place({ x: 1, y: 0, facing: "WEST" });
       robot.move();
       assertEquals(robot.report(), { x: 0, y: 0, facing: "WEST" });
     },
@@ -39,7 +39,7 @@ Deno.test("Robot Movement with BasicBoard", async (t) => {
     "PlacedRobot.move should correctly update position when facing EAST",
     () => {
       const robot = new PlacedRobot(board, initialPosition);
-      robot.place(0, 0, "EAST");
+      robot.place({ x: 0, y: 0, facing: "EAST" });
       robot.move();
       assertEquals(robot.report(), { x: 1, y: 0, facing: "EAST" });
     },
@@ -53,12 +53,12 @@ Deno.test("Robot Placement - Edge Cases", async (t) => {
   await t.step("should reject placement at negative coordinates", () => {
     const robot = new PlacedRobot(board, initialPosition);
     assertThrows(
-      () => robot.place(-1, 0, "NORTH"),
+      () => robot.place({ x: -1, y: 0, facing: "NORTH" }),
       RobotError,
       "Invalid position: (-1, 0) is outside the table boundaries",
     );
     assertThrows(
-      () => robot.place(0, -1, "NORTH"),
+      () => robot.place({ x: 0, y: -1, facing: "NORTH" }),
       RobotError,
       "Invalid position: (0, -1) is outside the table boundaries",
     );
@@ -67,12 +67,12 @@ Deno.test("Robot Placement - Edge Cases", async (t) => {
   await t.step("should reject placement just beyond table boundaries", () => {
     const robot = new PlacedRobot(board, initialPosition);
     assertThrows(
-      () => robot.place(5, 0, "NORTH"),
+      () => robot.place({ x: 5, y: 0, facing: "NORTH" }),
       RobotError,
       "Invalid position: (5, 0) is outside the table boundaries",
     );
     assertThrows(
-      () => robot.place(0, 5, "NORTH"),
+      () => robot.place({ x: 0, y: 5, facing: "NORTH" }),
       RobotError,
       "Invalid position: (0, 5) is outside the table boundaries",
     );
@@ -85,7 +85,7 @@ Deno.test("Robot Movement - Edge Cases", async (t) => {
 
   await t.step("should not move robot off table from NORTH edge", () => {
     const robot = new PlacedRobot(board, initialPosition);
-    robot.place(0, 4, "NORTH"); // Top edge
+    robot.place({ x: 0, y: 4, facing: "NORTH" }); // Top edge
     assertThrows(
       () => robot.move(),
       RobotError,
@@ -96,7 +96,7 @@ Deno.test("Robot Movement - Edge Cases", async (t) => {
 
   await t.step("should not move robot off table from SOUTH edge", () => {
     const robot = new PlacedRobot(board, initialPosition);
-    robot.place(0, 0, "SOUTH"); // Bottom edge
+    robot.place({ x: 0, y: 0, facing: "SOUTH" }); // Bottom edge
     assertThrows(
       () => robot.move(),
       RobotError,
@@ -107,7 +107,7 @@ Deno.test("Robot Movement - Edge Cases", async (t) => {
 
   await t.step("should not move robot off table from EAST edge", () => {
     const robot = new PlacedRobot(board, initialPosition);
-    robot.place(4, 0, "EAST"); // Right edge
+    robot.place({ x: 4, y: 0, facing: "EAST" }); // Right edge
     assertThrows(
       () => robot.move(),
       RobotError,
@@ -118,7 +118,7 @@ Deno.test("Robot Movement - Edge Cases", async (t) => {
 
   await t.step("should not move robot off table from WEST edge", () => {
     const robot = new PlacedRobot(board, initialPosition);
-    robot.place(0, 0, "WEST"); // Left edge
+    robot.place({ x: 0, y: 0, facing: "WEST" }); // Left edge
     assertThrows(
       () => robot.move(),
       RobotError,
