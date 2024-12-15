@@ -86,6 +86,67 @@ The following commands are supported:
 *   **`RIGHT`**: Rotates the robot 90 degrees to the right.
 *   **`REPORT`**: Reports the current `X`, `Y` position and facing direction of the robot.
 
+## Development Environment
+
+This project includes a pre-configured development environment using a devcontainer. This allows you to develop in a consistent and isolated environment with all the necessary tools and dependencies pre-installed.
+
+### Prerequisites
+
+To use the devcontainer, you will need the following:
+
+*   [Docker](https://www.docker.com/) installed and running on your local machine.
+
+Tools:
+*   [Visual Studio Code](https://code.visualstudio.com/) installed on your local machine.
+*   The [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension installed in VS Code.
+
+    or
+
+*   [Other tools that support dev containers](https://containers.dev/supporting) 
+*   The [Dev Containers CLI](https://github.com/devcontainers/cli) dev container CLI.
+
+    or
+   * You can just run the docker file in .devcontainer directly
+
+
+
+### Setting up the Dev Container
+
+1. **Clone the repository:**
+
+    ```bash
+    git clone <repository_url>
+    cd <repository_name>
+    ```
+
+2. **Open the project in VS Code:**
+
+    ```bash
+    code .
+    ```
+
+3. **Reopen in Container:**
+
+    *   VS Code should automatically detect the `.devcontainer` folder and prompt you to reopen the project in the container. Click the "Reopen in Container" button.
+    *   Alternatively, you can open the Command Palette (Ctrl/Cmd + Shift + P) and run the command "Dev Containers: Reopen in Container".
+
+### Using the Dev Container
+
+Once the container is built and running, you can develop as you normally would within VS Code. The devcontainer is configured with the following:
+
+*   **Deno:** The Deno runtime environment is installed and ready to use.
+*   **Node.js:** Node.js is also available in the container.
+*   **VS Code Extensions:** The following VS Code extensions are pre-installed:
+    *   `justjavac.vscode-deno-extensionpack`
+    *   `denoland.vscode-deno`
+    *   `eamodio.gitlens`
+
+You can now run Deno commands, execute tests, and use the CLI directly within the containerized environment.
+
+### Stopping the Dev Container
+
+When you are finished working in the devcontainer, you can close the VS Code window. This will automatically stop the container. You can also explicitly stop the container using the Docker Desktop application or the command line.
+
 ## System Architecture
 
 The system is designed with a modular architecture, separating concerns into different modules:
@@ -106,7 +167,6 @@ The system is designed with a modular architecture, separating concerns into dif
 The system is designed to be robust and handle various error conditions:
 
 *   **Invalid Commands:** The system gracefully handles invalid commands and provides informative error messages.
-    
 *   **Invalid Placement:** The system prevents the robot from being placed outside the table boundaries.
 *   **Invalid Movement:** The system prevents the robot from moving off the table.
 *   **Case Insensitivity:** The system handles commands in a case-insensitive manner.
