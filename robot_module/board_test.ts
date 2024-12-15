@@ -2,14 +2,26 @@ import { assertEquals } from "jsr:@std/assert";
 import { BasicBoard, type Position } from "./index.ts";
 
 Deno.test("BasicBoard", async (t) => {
-  const board = new BasicBoard();
+  await t.step(
+    "getDimensions returns correct dimensions with default values",
+    () => {
+      const board = new BasicBoard();
+      const dimensions = board.getDimensions();
+      assertEquals(dimensions, { height: 5, width: 5 });
+    },
+  );
 
-  await t.step("getDimensions returns correct dimensions", () => {
-    const dimensions = board.getDimensions();
-    assertEquals(dimensions, { height: 5, width: 5 });
-  });
+  await t.step(
+    "getDimensions returns correct dimensions with custom values",
+    () => {
+      const board = new BasicBoard(10, 10);
+      const dimensions = board.getDimensions();
+      assertEquals(dimensions, { height: 10, width: 10 });
+    },
+  );
 
   await t.step("canPlace returns true for valid positions", () => {
+    const board = new BasicBoard();
     const validPositions: Position[] = [
       { x: 0, y: 0 },
       { x: 2, y: 3 },
@@ -21,6 +33,7 @@ Deno.test("BasicBoard", async (t) => {
   });
 
   await t.step("canPlace returns false for invalid positions", () => {
+    const board = new BasicBoard();
     const invalidPositions: Position[] = [
       { x: -1, y: 0 },
       { x: 0, y: -1 },
@@ -32,4 +45,19 @@ Deno.test("BasicBoard", async (t) => {
       assertEquals(board.canPlace(position), false);
     }
   });
+
+  await t.step(
+    "canPlace returns false for positions outside custom dimensions",
+    () => {
+      const board = new BasicBoard(3, 3);
+      const invalidPositions: Position[] = [
+        { x: 3, y: 0 },
+        { x: 0, y: 3 },
+        { x: 3, y: 3 },
+      ];
+      for (const position of invalidPositions) {
+        assertEquals(board.canPlace(position), false);
+      }
+    },
+  );
 });
