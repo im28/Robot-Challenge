@@ -3,5 +3,6 @@
   "exports": "./index.ts",
   "tasks": {
     "dev": "deno run --watch main.ts"
-  }
+  },
+  "exclude": ["*test.ts"]
 }
