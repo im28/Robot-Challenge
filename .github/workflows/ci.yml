@@ -20,6 +20,10 @@ jobs:
       run: deno test --coverage=cov_profile
     - name: Generate lcov report
       run: deno coverage ./cov_profile --lcov --output=cov_profile/cov.lcov
-    - uses: ImBIOS/lcov-coverage-badge@v1
+    - name: Send coverage to Code Climate
+      uses: paambaati/codeclimate-action@v9.0.0
+      env:
+        CC_TEST_REPORTER_ID: 8d3f4248acef2f4ba4b7b406233206968ec732c22e0d51477b77da0071bdbfda
       with:
-        file: ./cov_profile/cov.lcov
+        coverageLocations: |
+          ${{github.workspace}}/cov_profile/cov.lcov:lcov
