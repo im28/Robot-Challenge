@@ -126,12 +126,12 @@ Deno.test("Robot System", async (t) => {
         "REPORT",
         "MOVE",
         "REPORT",
-        "LEFT",
+        "RIGHT",
         "REPORT",
       ]),
       {
         errors: [],
-        outputs: ["1,1,NORTH", "1,2,NORTH", "1,2,WEST"],
+        outputs: ["1,1,NORTH", "1,2,NORTH", "1,2,EAST"],
       },
     );
   });
