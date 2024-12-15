@@ -1,4 +1,7 @@
 # Robot Challenge
+[![CI Status](https://github.com/im28/Robot-Challenge/actions/workflows/ci.yml/badge.svg)](https://github.com/im28/Robot-Challenge/actions/workflows/ci.yml)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/14ee77514026f70c3e19/test_coverage)](https://codeclimate.com/github/im28/Robot-Challenge/test_coverage)
+[![Latest Release](https://img.shields.io/github/v/release/im28/Robot-Challenge)]()
 
 This project simulates a toy robot moving on a square tabletop. The robot can be
 placed on the table, moved, rotated, and its position reported via a
