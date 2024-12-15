@@ -6,9 +6,7 @@
     "jsr:@std/bytes@^1.0.3": "1.0.4",
     "jsr:@std/cli@^1.0.8": "1.0.8",
     "jsr:@std/internal@^1.0.5": "1.0.5",
-    "jsr:@std/streams@^1.0.8": "1.0.8",
-    "npm:ts-sinon@*": "2.0.2",
-    "npm:ts-sinon@^2.0.2": "2.0.2"
+    "jsr:@std/streams@^1.0.8": "1.0.8"
   },
   "jsr": {
     "@std/assert@1.0.9": {
@@ -150,8 +148,7 @@
     "dependencies": [
       "jsr:@std/assert@^1.0.9",
       "jsr:@std/cli@^1.0.8",
-      "jsr:@std/streams@^1.0.8",
-      "npm:ts-sinon@^2.0.2"
+      "jsr:@std/streams@^1.0.8"
     ]
   }
 }
