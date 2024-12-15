@@ -1,0 +1,36 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - uses: actions/checkout@v3
+    - uses: denoland/setup-deno@v2
+      with:
+        deno-version: v2.1
+    - name: Build for Windows (x86_64)
+      run: deno compile --allow-read --allow-write --allow-run --output robot-cli-x86_64-pc-windows-msvc.exe --target x86_64-pc-windows-msvc main.ts
+    - name: Build for macOS (x86_64)
+      run: deno compile --allow-read --allow-write --allow-run --output robot-cli-x86_64-apple-darwin --target x86_64-apple-darwin main.ts
+    - name: Build for macOS (ARM64)
+      run: deno compile --allow-read --allow-write --allow-run --output robot-cli-aarch64-apple-darwin --target aarch64-apple-darwin main.ts
+    - name: Build for Linux (x86_64)
+      run: deno compile --allow-read --allow-write --allow-run --output robot-cli-x86_64-unknown-linux-gnu --target x86_64-unknown-linux-gnu main.ts
+    - name: Build for Linux (ARM64)
+      run: deno compile --allow-read --allow-write --allow-run --output robot-cli-aarch64-unknown-linux-gnu --target aarch64-unknown-linux-gnu main.ts
+    - name: Create Release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: robot-cli-*
+        name: Release ${{ github.ref_name }}
+        tag_name: ${{ github.ref_name }}
+        draft: false
+        prerelease: false
+        fail_on_unmatched_files: true
