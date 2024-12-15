@@ -1,5 +1,6 @@
 import {
   BasicBoard,
+  type Board,
   type Orientation,
   type OrientedPosition,
   PlacedRobot,
@@ -18,8 +19,9 @@ export interface RobotCliSystem {
 export class RobotSystem implements RobotCliSystem {
   private isPlaced = false;
   private placedRobot: PlacedRobot | undefined;
-  private board = new BasicBoard();
   private reportFormatter = new CommandLineReportFormatter();
+
+  constructor(private board: Board = new BasicBoard()) {}
 
   executeCommands(commands: string[]) {
     const result: robotSystemOutput = { errors: [], outputs: [] };
