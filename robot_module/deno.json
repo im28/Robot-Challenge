@@ -4,6 +4,5 @@
     "dev": "deno run --watch main.ts",
     "report:coverage": "deno test --coverage=coverage; deno coverage coverage --detailed"
   },
-  "exports": "./index.ts",
-  "exclude": ["*test.ts"]
+  "exports": "./index.ts"
 }
