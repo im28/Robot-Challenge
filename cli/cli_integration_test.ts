@@ -1,5 +1,6 @@
 import { assertEquals } from "jsr:@std/assert";
 import { RobotSystem } from "./index.ts";
+import { BasicBoard } from "../robot_module/board.ts";
 
 Deno.test("Robot System", async (t) => {
   await t.step("Example Test Cases", () => {
@@ -32,6 +33,18 @@ Deno.test("Robot System", async (t) => {
         robot.executeCommands(["PLACE 6,6,NORTH", "MOVE", "REPORT"]),
         {
           errors: ["Invalid position: (6, 6) is outside the table boundaries"],
+          outputs: [],
+        },
+      );
+    });
+
+    await t.step("placing the robot outside the custom sized table", () => {
+      const customBoard = new BasicBoard(3, 3);
+      const robot = new RobotSystem(customBoard);
+      assertEquals(
+        robot.executeCommands(["PLACE 3,3,NORTH", "REPORT"]),
+        {
+          errors: ["Invalid position: (3, 3) is outside the table boundaries"],
           outputs: [],
         },
       );

@@ -7,12 +7,19 @@ export interface Board {
 }
 
 export class BasicBoard implements Board {
+  constructor(private height: number = 5, private width: number = 5) {}
+
   getDimensions(): Dimensions {
-    return { height: 5, width: 5 };
+    return { height: this.height, width: this.width };
   }
-  
+
   canPlace(position: Position): boolean {
     // check if position is within bounds
-    return position.x >= 0 && position.x < 5 && position.y >= 0 && position.y < 5;
+    return (
+      position.x >= 0 &&
+      position.x < this.width &&
+      position.y >= 0 &&
+      position.y < this.height
+    );
   }
 }
