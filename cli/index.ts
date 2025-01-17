@@ -4,7 +4,7 @@ import {
   type Orientation,
   type OrientedPosition,
   PlacedRobot,
-  Position,
+  type Position,
 } from "@robot/core";
 import { CommandLineReportFormatter } from "./reporter.ts";
 
@@ -37,7 +37,7 @@ export class RobotSystem implements RobotCliSystem {
           }
           this.placedRobot = new PlacedRobot(
             this.board,
-            this.parsePlaceCommand(command),
+            this.parsePlaceCommand(command)
           );
           this.isPlaced = true;
         } catch (e) {
@@ -54,23 +54,52 @@ export class RobotSystem implements RobotCliSystem {
               this.placedRobot.right();
             } else if (command === "REPORT") {
               result.outputs.push(
-                this.reportFormatter.format(this.placedRobot.report()),
+                this.reportFormatter.formatOrientedPosition(
+                  this.placedRobot.report()
+                )
               );
             }
           }
         } catch (error) {
           result.errors.push((error as Error).message);
         }
+      } else if (command.startsWith("FIND")) {
+        if (this.isPlaced && this.placedRobot) {
+          const position = this.parseFindCommand(command);
+          if (
+            this.placedRobot.report().x === position.x &&
+            this.placedRobot.report().y === position.y
+          ) {
+            result.errors.push("Robot is already at the destination");
+            continue;
+          }
+
+          if (!this.board.canPlace(position)) {
+            result.errors.push(
+              `Invalid position: (${position.x},${position.y}) is outside the table boundaries or occupied by an obstacle`
+            );
+            continue;
+          }
+
+          const positions = this.board.findPath(
+            this.placedRobot.report(),
+            position
+          );
+          if (positions.length === 0) {
+            result.errors.push("No path found");
+          }
+          positions.forEach((position) => {
+            result.outputs.push(this.reportFormatter.formatPosition(position));
+          });
+        }
       } else if (command.startsWith("OBSTACLE")) {
-        const position = this.parseObstcaleCommand(command);
+        const position = this.parseObstacleCommand(command);
         if (this.isPlaced && this.placedRobot) {
           if (
             this.placedRobot.report().x === position.x &&
             this.placedRobot.report().y === position.y
           ) {
-            result.errors.push(
-              `Invalid OBSTACLE command: ${command}`,
-            );
+            result.errors.push(`Invalid OBSTACLE command: ${command}`);
             continue;
           }
         }
@@ -91,9 +120,7 @@ export class RobotSystem implements RobotCliSystem {
   }
 
   private parsePlaceCommand(command: string): OrientedPosition {
-    const match = command.match(
-      /PLACE\s+(\d+)\s*,\s*(\d+)\s*,\s*([A-Z]+)/i,
-    );
+    const match = command.match(/PLACE\s+(\d+)\s*,\s*(\d+)\s*,\s*([A-Z]+)/i);
     if (match) {
       const orientation = match[3];
       if (!this.isOrientation(orientation)) {
@@ -110,10 +137,8 @@ export class RobotSystem implements RobotCliSystem {
     }
   }
 
-  private parseObstcaleCommand(command: string): Position {
-    const match = command.match(
-      /OBSTACLE\s+(\d+)\s*,\s*(\d+)\s*/i,
-    );
+  private parseObstacleCommand(command: string): Position {
+    const match = command.match(/OBSTACLE\s+(\d+)\s*,\s*(\d+)\s*/i);
     if (match) {
       return {
         x: parseInt(match[1]),
@@ -121,6 +146,18 @@ export class RobotSystem implements RobotCliSystem {
       };
     } else {
       throw new Error(`Invalid OBSTACLE command: ${command}`);
+    }
+  }
+
+  private parseFindCommand(command: string): Position {
+    const match = command.match(/FIND\s+(\d+)\s*,\s*(\d+)\s*/i);
+    if (match) {
+      return {
+        x: parseInt(match[1]),
+        y: parseInt(match[2]),
+      };
+    } else {
+      throw new Error(`Invalid FIND command: ${command}`);
     }
   }
 }
