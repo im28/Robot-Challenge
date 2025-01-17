@@ -1,10 +1,10 @@
 import { RobotSystem, robotSystemOutput } from "@robot/cli";
 import { parseArgs } from "@std/cli";
 import { TextLineStream } from "@std/streams";
-
-const robot = new RobotSystem();
+import { BasicBoard } from "@robot/core";
 
 function processCommand(
+  robot: RobotSystem,
   command: string,
   verbose: boolean,
 ): robotSystemOutput {
@@ -15,7 +15,7 @@ function processCommand(
   return output;
 }
 
-async function runInteractiveMode(verbose: boolean) {
+async function runInteractiveMode(robot: RobotSystem, verbose: boolean) {
   console.log("Entering interactive mode. Type 'EXIT' to quit.");
   while (true) {
     const command = prompt("Enter command:");
@@ -23,12 +23,13 @@ async function runInteractiveMode(verbose: boolean) {
       break;
     }
 
-    const output = await processCommand(command, verbose);
+    const output = await processCommand(robot, command, verbose);
     output.outputs.forEach((out) => console.log(out));
   }
 }
 
 async function runFileMode(
+  robot: RobotSystem,
   filePath: string,
   verbose: boolean,
   outputFilePath?: string,
@@ -44,7 +45,7 @@ async function runFileMode(
 
     for await (const command of lineStream) {
       if (command.trim() !== "") {
-        const output = await processCommand(command, verbose);
+        const output = await processCommand(robot, command, verbose);
         allOutputs = allOutputs.concat(output.outputs);
         if (verbose) {
           allErrors = allErrors.concat(output.errors);
@@ -73,7 +74,7 @@ async function runFileMode(
 async function main() {
   const parsedArgs = parseArgs(Deno.args, {
     boolean: ["verbose", "help"],
-    string: ["output", "input"],
+    string: ["output", "input", "height", "width"],
     alias: {
       "verbose": ["v"],
       "help": ["h"],
@@ -87,6 +88,11 @@ async function main() {
 
   const filePath = parsedArgs.input;
 
+  const height = parsedArgs.height ? parseInt(parsedArgs.height) : undefined;
+  const width = parsedArgs.width ? parseInt(parsedArgs.width) : undefined;
+
+  const robot = new RobotSystem(new BasicBoard(height, width));
+
   if (parsedArgs.help) {
     console.log(`
 Usage: robot-cli [OPTIONS]
@@ -95,6 +101,8 @@ Options:
   -i, --input     Input file path (if not provided, runs in interactive mode)
   -v, --verbose   Print verbose error messages (default: false)
   -o, --output    Output file path
+  --height        Height of the table (default: 5)
+  --width         Width of the table (default: 5)
   -h, --help      Show this help message
 
 Commands:
@@ -108,9 +116,9 @@ Commands:
   }
 
   if (filePath) {
-    await runFileMode(filePath, parsedArgs.verbose, parsedArgs.output);
+    await runFileMode(robot, filePath, parsedArgs.verbose, parsedArgs.output);
   } else {
-    await runInteractiveMode(parsedArgs.verbose);
+    await runInteractiveMode(robot, parsedArgs.verbose);
   }
 }
 

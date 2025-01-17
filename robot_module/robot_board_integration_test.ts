@@ -55,12 +55,12 @@ Deno.test("Robot Placement - Edge Cases", async (t) => {
     assertThrows(
       () => robot.place({ x: -1, y: 0, facing: "NORTH" }),
       RobotError,
-      "Invalid position: (-1, 0) is outside the table boundaries",
+      "Invalid position: (-1, 0) is outside the table boundaries or occupied by an obstacle",
     );
     assertThrows(
       () => robot.place({ x: 0, y: -1, facing: "NORTH" }),
       RobotError,
-      "Invalid position: (0, -1) is outside the table boundaries",
+      "Invalid position: (0, -1) is outside the table boundaries or occupied by an obstacle",
     );
   });
 
@@ -69,12 +69,12 @@ Deno.test("Robot Placement - Edge Cases", async (t) => {
     assertThrows(
       () => robot.place({ x: 5, y: 0, facing: "NORTH" }),
       RobotError,
-      "Invalid position: (5, 0) is outside the table boundaries",
+      "Invalid position: (5, 0) is outside the table boundaries or occupied by an obstacle",
     );
     assertThrows(
       () => robot.place({ x: 0, y: 5, facing: "NORTH" }),
       RobotError,
-      "Invalid position: (0, 5) is outside the table boundaries",
+      "Invalid position: (0, 5) is outside the table boundaries or occupied by an obstacle",
     );
   });
 });
@@ -89,7 +89,7 @@ Deno.test("Robot Movement - Edge Cases", async (t) => {
     assertThrows(
       () => robot.move(),
       RobotError,
-      "Invalid position: (0, 5) is outside the table boundaries",
+      "Invalid position: (0, 5) is outside the table boundaries or occupied by an obstacle",
     );
     assertEquals(robot.report(), { x: 0, y: 4, facing: "NORTH" });
   });
@@ -100,7 +100,7 @@ Deno.test("Robot Movement - Edge Cases", async (t) => {
     assertThrows(
       () => robot.move(),
       RobotError,
-      "Invalid position: (0, -1) is outside the table boundaries",
+      "Invalid position: (0, -1) is outside the table boundaries or occupied by an obstacle",
     );
     assertEquals(robot.report(), { x: 0, y: 0, facing: "SOUTH" });
   });
@@ -111,7 +111,7 @@ Deno.test("Robot Movement - Edge Cases", async (t) => {
     assertThrows(
       () => robot.move(),
       RobotError,
-      "Invalid position: (5, 0) is outside the table boundaries",
+      "Invalid position: (5, 0) is outside the table boundaries or occupied by an obstacle",
     );
     assertEquals(robot.report(), { x: 4, y: 0, facing: "EAST" });
   });
@@ -122,7 +122,7 @@ Deno.test("Robot Movement - Edge Cases", async (t) => {
     assertThrows(
       () => robot.move(),
       RobotError,
-      "Invalid position: (-1, 0) is outside the table boundaries",
+      "Invalid position: (-1, 0) is outside the table boundaries or occupied by an obstacle",
     );
     assertEquals(robot.report(), { x: 0, y: 0, facing: "WEST" });
   });

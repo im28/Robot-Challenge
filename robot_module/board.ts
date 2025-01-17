@@ -8,16 +8,21 @@ export interface Board {
 }
 
 export class BasicBoard implements Board {
+  constructor(private height: number = 5, private width: number = 5) {}
+
   obstacles = new Set<string>();
 
   getDimensions(): Dimensions {
-    return { height: 5, width: 5 };
+    return { height: this.height, width: this.width };
   }
 
   canPlace(position: Position): boolean {
     // check if position is within bounds
-    const isWithinBounds = position.x >= 0 && position.x < 5 &&
-      position.y >= 0 && position.y < 5;
+    const isWithinBounds =
+      position.x >= 0 &&
+      position.x < this.width &&
+      position.y >= 0 &&
+      position.y < this.height;
 
     // check if position is not occupied by an obstacle
     const isNotOccupied = !this.obstacles.has(JSON.stringify(position));

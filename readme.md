@@ -30,6 +30,8 @@ Options:
   -i, --input     Input file path (if not provided, runs in interactive mode)
   -v, --verbose   Print verbose error messages (default: false)
   -o, --output    Output file path
+  --height        Height of the table (default: 5)
+  --width         Width of the table (default: 5)
   -h, --help      Show this help message
 
 Commands:

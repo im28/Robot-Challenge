@@ -31,7 +31,7 @@ Deno.test("Robot Constructor", async (t) => {
       assertThrows(
         () => new PlacedRobot(board, position),
         RobotError,
-        "Invalid position: (5, 5) is outside the table boundaries",
+        "Invalid position: (5, 5) is outside the table boundaries or occupied by an obstacle",
       );
     },
   );
@@ -71,12 +71,12 @@ Deno.test("Robot Placement", async (t) => {
     assertThrows(
       () => robot.place({ x: 5, y: 0, facing: "NORTH" }),
       RobotError,
-      "Invalid position: (5, 0) is outside the table boundaries",
+      "Invalid position: (5, 0) is outside the table boundaries or occupied by an obstacle",
     );
     assertThrows(
       () => robot.place({ x: 0, y: 5, facing: "NORTH" }),
       RobotError,
-      "Invalid position: (0, 5) is outside the table boundaries",
+      "Invalid position: (0, 5) is outside the table boundaries or occupied by an obstacle",
     );
   });
 });
@@ -143,7 +143,7 @@ Deno.test("PlacedRobot Movement", async (t) => {
     assertThrows(
       () => robot.move(),
       RobotError,
-      "Invalid position: (0, 1) is outside the table boundaries",
+      "Invalid position: (0, 1) is outside the table boundaries or occupied by an obstacle",
     );
 
     assertEquals(robot.report(), { x: 0, y: 0, facing: "NORTH" });
