@@ -77,7 +77,7 @@ Deno.test("BasicBoard", async (t) => {
     0 1 0 1 0
     0 1 0 1 0
     0 1 0 1 0
-    0 1 X 1 0
+    0 1 S 1 0
     */
 
     const board = new BasicBoard(5, 5);
@@ -101,27 +101,10 @@ Deno.test("BasicBoard", async (t) => {
     ]);
   });
 
-  await t.step("findPath cannot find a path when it is blocked by obstacles", () => {
-    /*/
-    0 0 0 0 G
-    0 0 0 0 0
-    0 0 0 0 0
-    1 1 0 0 0
-    X 1 0 0 0
-    */
-
-    const board = new BasicBoard(5, 5);
-    board.addObstacle({ x: 1, y: 1 });
-    board.addObstacle({ x: 1, y: 0 });
-    board.addObstacle({ x: 0, y: 1 });
-    const path = board.findPath({ x: 0, y: 0 }, { x: 4, y: 4 });
-    assertEquals(path, []);
-  });
-
-  await t.step("findPath cannot find a path when it is blocked by obstacles", () => {
+  await t.step("findPath find a path when it is blocked by obstacles variant", () => {
     /*/
     0 0 0 0 0
-    X 1 0 0 0
+    S 1 0 0 0
     0 1 0 0 0
     0 0 0 0 0
     0 0 0 0 G
@@ -140,5 +123,22 @@ Deno.test("BasicBoard", async (t) => {
       { x: 4, y: 1 },
       { x: 4, y: 0 },
     ]);
+  });
+
+  await t.step("findPath cannot find a path when it is blocked by obstacles", () => {
+    /*/
+    0 0 0 0 G
+    0 0 0 0 0
+    0 0 0 0 0
+    1 1 0 0 0
+    S 1 0 0 0
+    */
+
+    const board = new BasicBoard(5, 5);
+    board.addObstacle({ x: 1, y: 1 });
+    board.addObstacle({ x: 1, y: 0 });
+    board.addObstacle({ x: 0, y: 1 });
+    const path = board.findPath({ x: 0, y: 0 }, { x: 4, y: 4 });
+    assertEquals(path, []);
   });
 });

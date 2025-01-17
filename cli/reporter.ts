@@ -1,11 +1,15 @@
-import type { OrientedPosition } from "@robot/core";
+import type { OrientedPosition, Position } from "@robot/core";
 
 export interface RobotReportFormatter {
-  format(position: OrientedPosition): string;
+  formatOrientedPosition(position: OrientedPosition): string;
 }
 
 export class CommandLineReportFormatter implements RobotReportFormatter {
-  format(position: OrientedPosition): string {
+  formatOrientedPosition(position: OrientedPosition): string {
     return `${position.x},${position.y},${position.facing}`;
+  }
+
+  formatPosition(position: Position): string {
+    return `(${position.x},${position.y})`;
   }
 }
