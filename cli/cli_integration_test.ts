@@ -32,7 +32,7 @@ Deno.test("Robot System", async (t) => {
       assertEquals(
         robot.executeCommands(["PLACE 6,6,NORTH", "MOVE", "REPORT"]),
         {
-          errors: ["Invalid position: (6, 6) is outside the table boundaries"],
+          errors: ["Invalid position: (6, 6) is outside the table boundaries or occupied by an obstacle"],
           outputs: [],
         },
       );
@@ -44,7 +44,7 @@ Deno.test("Robot System", async (t) => {
       assertEquals(
         robot.executeCommands(["PLACE 3,3,NORTH", "REPORT"]),
         {
-          errors: ["Invalid position: (3, 3) is outside the table boundaries"],
+          errors: ["Invalid position: (3, 3) is outside the table boundaries or occupied by an obstacle"],
           outputs: [],
         },
       );
@@ -59,7 +59,7 @@ Deno.test("Robot System", async (t) => {
           "REPORT",
         ]),
         {
-          errors: ["Invalid position: (0, -1) is outside the table boundaries"],
+          errors: ["Invalid position: (0, -1) is outside the table boundaries or occupied by an obstacle"],
           outputs: ["0,0,SOUTH"],
         },
       );
@@ -70,7 +70,7 @@ Deno.test("Robot System", async (t) => {
           "REPORT",
         ]),
         {
-          errors: ["Invalid position: (-1, 0) is outside the table boundaries"],
+          errors: ["Invalid position: (-1, 0) is outside the table boundaries or occupied by an obstacle"],
           outputs: ["0,0,WEST"],
         },
       );
@@ -81,7 +81,7 @@ Deno.test("Robot System", async (t) => {
           "REPORT",
         ]),
         {
-          errors: ["Invalid position: (4, 5) is outside the table boundaries"],
+          errors: ["Invalid position: (4, 5) is outside the table boundaries or occupied by an obstacle"],
           outputs: ["4,4,NORTH"],
         },
       );
@@ -92,7 +92,7 @@ Deno.test("Robot System", async (t) => {
           "REPORT",
         ]),
         {
-          errors: ["Invalid position: (5, 4) is outside the table boundaries"],
+          errors: ["Invalid position: (5, 4) is outside the table boundaries or occupied by an obstacle"],
           outputs: ["4,4,EAST"],
         },
       );
@@ -240,7 +240,7 @@ Deno.test("Robot System", async (t) => {
           "REPORT",
         ]),
         {
-          errors: ["Invalid position: (6, 6) is outside the table boundaries"],
+          errors: ["Invalid position: (6, 6) is outside the table boundaries or occupied by an obstacle"],
           outputs: ["1,1,NORTH"],
         },
       );
@@ -300,6 +300,45 @@ Deno.test("Robot System", async (t) => {
       assertEquals(
         robot.executeCommands(["PLACE 0,0,NORTH", "   MOVE  ", "  REPORT  "]),
         { errors: [], outputs: ["0,1,NORTH"] },
+      );
+    });
+  });
+
+  await t.step("OBSTACLE Command", async (t) => {
+    await t.step("Obstacle cannot be placed where the robot is", () => {
+      const robot = new RobotSystem();
+      assertEquals(
+        robot.executeCommands(["PLACE 0,0,NORTH", "OBSTACLE 0,0", "REPORT"]),
+        {
+          errors: ["Invalid OBSTACLE command: OBSTACLE 0,0"],
+          outputs: ["0,0,NORTH"],
+        },
+      );
+    });
+
+    await t.step("Obstacle can be placed before and robot cannot be placed there", () => {
+      const robot = new RobotSystem();
+      assertEquals(
+        robot.executeCommands([
+          "OBSTACLE 0,0",
+          "PLACE 0,0,NORTH",
+          "REPORT",
+        ]),
+        { errors: ["Invalid position: (0, 0) is outside the table boundaries or occupied by an obstacle"], outputs: [] },
+      );
+    });
+
+
+    await t.step("Obstacle can be placed after the robot and it cannot move there", () => {
+      const robot = new RobotSystem();
+      assertEquals(
+        robot.executeCommands([
+          "PLACE 0,0,NORTH",
+          "OBSTACLE 0,1",
+          "MOVE",
+          "REPORT",
+        ]),
+        { errors: ["Invalid position: (0, 1) is outside the table boundaries or occupied by an obstacle"], outputs: ["0,0,NORTH"] },
       );
     });
   });

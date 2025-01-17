@@ -46,6 +46,16 @@ Deno.test("BasicBoard", async (t) => {
     }
   });
 
+  await t.step("addObstacle returns false for obstacle positions", () => {
+    const board = new BasicBoard(3, 3);
+    board.addObstacle({ x: 2, y: 2 });
+    board.addObstacle({ x: 3, y: 4 });
+
+    assertEquals(board.canPlace({ x: 2, y: 2 }), false);
+    assertEquals(board.canPlace({ x: 3, y: 4 }), false);
+    assertEquals(board.canPlace({ x: 0, y: 0 }), true);
+  });
+
   await t.step(
     "canPlace returns false for positions outside custom dimensions",
     () => {

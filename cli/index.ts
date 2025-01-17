@@ -4,6 +4,7 @@ import {
   type Orientation,
   type OrientedPosition,
   PlacedRobot,
+  Position,
 } from "@robot/core";
 import { CommandLineReportFormatter } from "./reporter.ts";
 
@@ -60,6 +61,20 @@ export class RobotSystem implements RobotCliSystem {
         } catch (error) {
           result.errors.push((error as Error).message);
         }
+      } else if (command.startsWith("OBSTACLE")) {
+        const position = this.parseObstcaleCommand(command);
+        if (this.isPlaced && this.placedRobot) {
+          if (
+            this.placedRobot.report().x === position.x &&
+            this.placedRobot.report().y === position.y
+          ) {
+            result.errors.push(
+              `Invalid OBSTACLE command: ${command}`,
+            );
+            continue;
+          }
+        }
+        this.board.addObstacle(position);
       } else {
         result.errors.push(`Invalid command: ${command}`);
       }
@@ -92,6 +107,20 @@ export class RobotSystem implements RobotCliSystem {
       };
     } else {
       throw new Error(`Invalid PLACE command: ${command}`);
+    }
+  }
+
+  private parseObstcaleCommand(command: string): Position {
+    const match = command.match(
+      /OBSTACLE\s+(\d+)\s*,\s*(\d+)\s*/i,
+    );
+    if (match) {
+      return {
+        x: parseInt(match[1]),
+        y: parseInt(match[2]),
+      };
+    } else {
+      throw new Error(`Invalid OBSTACLE command: ${command}`);
     }
   }
 }
