@@ -46,7 +46,7 @@ Deno.test("BasicBoard", async (t) => {
     }
   });
 
-  await t.step("addObstacle returns false for obstcale positions", () => {
+  await t.step("addObstacle returns false for obstacle positions", () => {
     const board = new BasicBoard(3, 3);
     board.addObstacle({ x: 2, y: 2 });
     board.addObstacle({ x: 3, y: 4 });
