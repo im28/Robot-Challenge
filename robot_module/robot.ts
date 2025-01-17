@@ -43,7 +43,7 @@ export class PlacedRobot implements Robot {
     }
     if (!this.board.canPlace({ x, y })) {
       throw new RobotError(
-        `Invalid position: (${x}, ${y}) is outside the table boundaries`,
+        `Invalid position: (${x}, ${y}) is outside the table boundaries or occupied by an obstacle`,
       );
     }
 
@@ -69,7 +69,7 @@ export class PlacedRobot implements Robot {
 
     if (!this.board.canPlace({ x, y })) {
       throw new RobotError(
-        `Invalid position: (${x}, ${y}) is outside the table boundaries`,
+        `Invalid position: (${x}, ${y}) is outside the table boundaries or occupied by an obstacle`,
       );
     }
 
